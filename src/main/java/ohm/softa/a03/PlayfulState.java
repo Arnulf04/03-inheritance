@@ -8,7 +8,6 @@ public class PlayfulState extends State {
 
     @Override
     State successor(Cat cat) {
-        logger.info("Getting in a playful mood!");
         return new SleepingState(cat.getSleep());
     }
 }

@@ -19,6 +19,8 @@ public abstract class State {
         t = t + 1;
         logger.info("tick()");
 
+        // until time is reached the current state will return
+        // otherwise the new state will return
         if (t < duration){
             return this;
         } else {

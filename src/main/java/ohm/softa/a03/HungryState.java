@@ -8,6 +8,10 @@ public class HungryState extends State {
 
     @Override
     State successor(Cat cat) {
-        return new DigestingState(cat.getDigest());
+        return new DeathState();
+    }
+
+    public State feed(Cat cat){
+        return new DigestingState(cat.getDigest(), getDuration() - getTime());
     }
 }

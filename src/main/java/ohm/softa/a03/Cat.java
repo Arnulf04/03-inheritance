@@ -3,10 +3,8 @@ package ohm.softa.a03;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static ohm.softa.a03.Cat.State.*;
-
 public class Cat {
-	private State curentState;
+	private State currentState;
 
 	// state durations (set via constructor), ie. the number of ticks in each state
 	private final int sleep;
@@ -15,7 +13,7 @@ public class Cat {
 
 	private final String name;
 
-
+	// set values and the state
 	public Cat(String name, int sleep, int awake, int digest) {
 		this.name = name;
 		this.sleep = sleep;
@@ -23,7 +21,12 @@ public class Cat {
 		this.digest = digest;
 
 		// start with a state
-		curentState = new SleepingState(sleep);
+		currentState = new SleepingState(sleep);
+	}
+
+	// start the tick
+	public void tick(){
+		this.currentState = currentState.tick(this);
 	}
 
 	@Override
@@ -31,6 +34,42 @@ public class Cat {
 		return name;
 	}
 
+	// set the new state
+	public boolean isHungry(){
+		// check current state
+		return currentState instanceof HungryState;
+	}
+	public boolean isDigesting(){
+		return currentState instanceof DigestingState;
+	}
+	public boolean isPlayful(){
+		return currentState instanceof PlayfulState;
+	}
+	public boolean isDead(){
+		return currentState instanceof DeathState;
+	}
+	public boolean isAsleep(){
+		return currentState instanceof SleepingState;
+	}
+
+	// getter
+	public int getAwake() {
+		return awake;
+	}
+	public int getDigest() {
+		return digest;
+	}
+	public int getSleep() {
+		return sleep;
+	}
+
+	public void feed(){
+		if (!isHungry())
+			throw new IllegalStateException("Can't stuff a cat...");
+
+		// change state
+		this.currentState = ((HungryState) currentState).feed(this);
+	}
 	//	public boolean isAsleep() {
 //		return state.equals(State.SLEEPING);
 //	}
@@ -51,16 +90,6 @@ public class Cat {
 //		return state == State.DEAD;
 //	}
 
-	// getter
-	public int getAwake() {
-		return awake;
-	}
-	public int getDigest() {
-		return digest;
-	}
-	public int getSleep() {
-		return sleep;
-	}
 	//	private static final Logger logger = LogManager.getLogger();
 
 	// valid states
